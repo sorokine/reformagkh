@@ -2,14 +2,13 @@
 # -*- coding: utf-8 -*-
 
 #******************************************************************************
-#
-# get_reformagkh_data-v2.py
+# get_reformagkh_overhaul.py
 # ---------------------------------------------------------
 # Grab reformagkh.ru data on buildings, put it in the CSV table.
 # More: https://github.com/nextgis/reformagkh
 #
 # Usage: 
-#      usage: get_reformagkh_data-v2.py [-h] [-o ORIGINALS_FOLDER] id output_name
+#      usage: get_reformagkh_overhaul.py [-h] [-o ORIGINALS_FOLDER] id output_name
 #      where:
 #           -h           show this help message and exit
 #           id           Region ID
@@ -17,10 +16,10 @@
 #           output_name  Where to store the results (path to CSV file)
 #           -of ORIGINALS_FOLDER  Folder to save original html files. Skip saving if empty.
 # Examples:
-#      python get_reformagkh_data-v2.py 2280999 data/housedata2.csv -o html_orig
+#      python get_reformagkh_overhaul.py 2280999 data/housedata2.csv -of html_orig
 #
-# Copyright (C) 2014-2016 Maxim Dubinin (sim@gis-lab.info)
-# Created: 18.03.2014
+# Copyright (C) 2017 Maxim Dubinin (maxim.dubinin@nextgis.ru)
+# Created: 29.08.2017
 #
 # This source is free software; you can redistribute it and/or modify it under
 # the terms of the GNU General Public License as published by the Free
@@ -50,6 +49,7 @@ from time import sleep
 import requesocks
 from stem import Signal
 from stem.control import Controller
+import os,sys
 
 parser = argparse.ArgumentParser()
 parser.add_argument('id', help='Region ID')
@@ -57,9 +57,8 @@ parser.add_argument('output_name', help='Where to store the results (path to CSV
 parser.add_argument('-o','--overwrite', action="store_true", help='Overwite all, will write over previously downloaded files.')
 parser.add_argument('-of','--originals_folder', help='Folder to save original html files. Skip saving if empty.')
 args = parser.parse_args()
-dirsep = '/' if not os.name == 'nt' else '\\' 
 if args.originals_folder:
-    if not args.originals_folder.endswith(dirsep): args.originals_folder = args.originals_folder + dirsep
+    if not args.originals_folder.endswith('\\'): args.originals_folder = args.originals_folder + '\\'
     if not os.path.exists(args.originals_folder): os.mkdir(args.originals_folder)
     
 def console_out(text):
@@ -77,7 +76,7 @@ def get_content(link):
         try:
             res = session.get(link).text
         except:
-            time.sleep(3)
+            sleep(3)
             res = ''
         else:
             break
@@ -147,16 +146,16 @@ def get_house_list(link):
     size = check_size(link)
     if size == 0: size = check_size(link)
     
-    pages = (int(size) / 10000) + 1
+    pages = (int(size) / 20) + 1
     
     houses_ids = []
     for page in range(1,pages+1):
-        res = get_content(link + '&page=' + str(page) + '&limit=10000')
+        res = get_content(link + '&page=' + str(page))
         soup = BeautifulSoup(''.join(res), 'html.parser')
         captcha = check_captcha(soup)
     
         while captcha == True:
-            res = get_content(link + '&page=' + str(page) + '&limit=10000')
+            res = get_content(link + '&page=' + str(page))
             soup = BeautifulSoup(''.join(res), 'html.parser')
             captcha = check_captcha(soup)
             change_proxy()
