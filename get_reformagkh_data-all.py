@@ -533,6 +533,12 @@ def parse_house_page_attrlist(soup):
     sect_attrs = ['section-rus', 'subsection-rus', 'attribute-rus', 'subattribute-rus', 'subsubattribute-rus']
     cur_sect = dict.fromkeys(sect_attrs)
 
+    # set column names with selector code for attribute names and attribute values
+    selector_name = 'Selector Code for Name'
+    #selector_value = 'Selector Code for Value'
+    #selector_name = 'New Selector Code for Name'
+    selector_value = 'New Selector Code for value'
+
     for row in attrlist:
 
         # update section attributes
@@ -543,13 +549,13 @@ def parse_house_page_attrlist(soup):
                     cur_sect[sect_attrs[i]] = None
             expected_attr_name = row[attr] or expected_attr_name # expected attr string is set to the last section name
 
-        if row['Selector Code for Name']:
+        if row[selector_name]:
             attr_name = '->'.join([ cur_sect[attr] for attr in sect_attrs if cur_sect[attr] ])
-            fixed_selector_code_name = re.sub('nth-child', 'nth-of-type', row['Selector Code for Name']) # this is needed because bs does not support nth-child
-            fixed_selector_code_value = re.sub('nth-child', 'nth-of-type', row['Selector Code for Value'])
-            #fixed_selector_code_name = row['Selector Code for Name']
-            #fixed_selector_code_value = row['Selector Code for Value']
-            #print attr_name, '==>', row['Selector Code for Name'], '==>', fixed_selector_code_name
+            fixed_selector_code_name = re.sub('nth-child', 'nth-of-type', row[selector_name]) # this is needed because bs does not support nth-child
+            fixed_selector_code_value = re.sub('nth-child', 'nth-of-type', row[selector_value])
+            #fixed_selector_code_name = row[selector_name]
+            #fixed_selector_code_value = row[selector_value]
+            #print attr_name, '==>', row[selector_name], '==>', fixed_selector_code_name
 
             result_name = soup.select(fixed_selector_code_name)
 
