@@ -562,6 +562,7 @@ def parse_house_page_attrlist(soup):
                 found_attr_name = result_name[0].text.strip().encode('utf-8')
 
                 # value extraction
+                print fixed_selector_code_value
                 result_value = soup.select(fixed_selector_code_value)
 
                 found_attr_value = result_value[0].text.strip().encode('utf-8') if result_value else 'not found'
@@ -607,6 +608,9 @@ def load_attrlist():
             attrlist.append(dict(zip( attrnames, [ s.strip(' ').replace('\n', '') for s in row ] )))
 
     # TODO: create output table column name
+
+    for row in attrlist:
+        print row
 
     return attrlist
 
