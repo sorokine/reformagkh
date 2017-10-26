@@ -84,6 +84,7 @@ import sys
 import random
 
 parser = argparse.ArgumentParser()
+parser.add_argument('region_name', help='Region name')
 parser.add_argument('id', help='Region (default) or house ID')
 parser.add_argument('output_name', help='Where to store the results (path to output file or database URI)')
 parser.add_argument('-of','--originals_folder', help='Folder to save original html files. Skip saving if empty.')
@@ -108,7 +109,7 @@ dirsep = '/' if not os.name == 'nt' else '\\'
 if args.originals_folder:
     if not args.originals_folder.endswith(dirsep): args.originals_folder = args.originals_folder + dirsep
     if not os.path.exists(args.originals_folder): os.mkdir(args.originals_folder)
-    region_name = args.originals_folder[:-1]
+    #region_name = args.originals_folder[:-1]
 if args.cache_only:
     if not args.originals_folder:
         print 'cache-only requested but originals folder was not specified, quitting...'
@@ -525,8 +526,8 @@ def parse_house_page_attrlist(soup):
         lat,lon = 'Not Found','Not Found'
         print '\tlat,lon was not found'
 
-    write_house_attribute(dict(REGION=region_name,HOUSE_ID=house_id,ATTR_NAME='lat',FOUND_NAME='lat',ED_DIST=0,VALUE=lat))
-    write_house_attribute(dict(REGION=region_name,HOUSE_ID=house_id,ATTR_NAME='lon',FOUND_NAME='lon',ED_DIST=0,VALUE=lon))
+    write_house_attribute(dict(REGION=args.region_name,HOUSE_ID=house_id,ATTR_NAME='lat',FOUND_NAME='lat',ED_DIST=0,VALUE=lat))
+    write_house_attribute(dict(REGION=args.region_name,HOUSE_ID=house_id,ATTR_NAME='lon',FOUND_NAME='lon',ED_DIST=0,VALUE=lon))
 
     # create output variable name from the section names
     sect_attrs = ['section-rus', 'subsection-rus', 'attribute-rus', 'subattribute-rus', 'subsubattribute-rus']
@@ -560,14 +561,14 @@ def parse_house_page_attrlist(soup):
 
                 found_attr_value = result_value[0].text.strip().encode('utf-8') if result_value else 'not found'
 
-                result_set = dict(REGION=region_name,
+                result_set = dict(REGION=args.region_name,
                                   HOUSE_ID=house_id,
                                   ATTR_NAME=attr_name,
                                   FOUND_NAME=found_attr_name,
                                   ED_DIST=editdistance.eval(expected_attr_name,found_attr_name),
                                   VALUE=found_attr_value)
             else: # not found
-                result_set = dict(REGION=region_name,
+                result_set = dict(REGION=args.region_name,
                                   HOUSE_ID=house_id,
                                   ATTR_NAME=attr_name,
                                   FOUND_NAME=None,
