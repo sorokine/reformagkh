@@ -556,6 +556,8 @@ def parse_house_page_attrlist(soup):
             #fixed_selector_code_name = row[selector_name]
             #fixed_selector_code_value = row[selector_value]
             #print attr_name, '==>', row[selector_name], '==>', fixed_selector_code_name
+            assert fixed_selector_code_name, 'Selector for name is empty for row ' + row
+            assert fixed_selector_code_value, 'Selector for value is empty for row ' + row
 
             result_name = soup.select(fixed_selector_code_name)
 
@@ -563,7 +565,7 @@ def parse_house_page_attrlist(soup):
                 found_attr_name = result_name[0].text.strip().encode('utf-8')
 
                 # value extraction
-                print fixed_selector_code_value
+                #print '>>>>'+fixed_selector_code_value
                 result_value = soup.select(fixed_selector_code_value)
 
                 found_attr_value = result_value[0].text.strip().encode('utf-8') if result_value else 'not found'
@@ -610,8 +612,8 @@ def load_attrlist():
 
     # TODO: create output table column name
 
-    for row in attrlist:
-        print row
+    #for row in attrlist:
+    #    print row
 
     return attrlist
 
