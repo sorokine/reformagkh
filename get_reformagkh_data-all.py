@@ -569,14 +569,14 @@ def parse_house_page_attrlist(soup):
             result_name = hlxml.cssselect(fixed_selector_code_name)
 
             if result_name:
-                found_attr_name = result_name[0].text.strip().encode('utf-8')
+                found_attr_name = result_name[0].text_content().strip().encode('utf-8')
 
                 # value extraction
                 #print '>>>>'+fixed_selector_code_value
                 #result_value = soup.select(fixed_selector_code_value)
                 result_value = hlxml.cssselect(fixed_selector_code_value)
 
-                found_attr_value = result_value[0].text.strip().encode('utf-8') if result_value else 'not found'
+                found_attr_value = result_value[0].text_content().strip().encode('utf-8') if result_value else 'not found'
 
                 result_set = dict(REGION=args.region_name,
                                   HOUSE_ID=house_id,
