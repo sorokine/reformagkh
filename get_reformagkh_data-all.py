@@ -512,6 +512,9 @@ def write_house_attribute(result_set):
     else: # outputformat == 'pg'
         psycopg2.extras.execute_values(pgcur, pgquery, [[result_set[k] for k in fieldnames_data]], template=None)
 
+import lxml.html
+from lxml.cssselect import CSSSelector
+
 def parse_house_page_attrlist(soup):
     """Parses a house page using attrlist information"""
 
@@ -539,6 +542,9 @@ def parse_house_page_attrlist(soup):
     #selector_name = 'New Selector Code for Name'
     selector_value = 'New Selector Code for value'
 
+#    print(soup.contents[1])
+    hlxml = lxml.html.fromstring(soup.contents[1].encode('utf-8'))
+
     for row in attrlist:
 
         # update section attributes
@@ -559,14 +565,16 @@ def parse_house_page_attrlist(soup):
             assert fixed_selector_code_name, 'Selector for name is empty for row ' + row
             assert fixed_selector_code_value, 'Selector for value is empty for row ' + row
 
-            result_name = soup.select(fixed_selector_code_name)
+            #result_name = soup.select(fixed_selector_code_name)
+            result_name = hlxml.cssselect(fixed_selector_code_name)
 
             if result_name:
                 found_attr_name = result_name[0].text.strip().encode('utf-8')
 
                 # value extraction
                 #print '>>>>'+fixed_selector_code_value
-                result_value = soup.select(fixed_selector_code_value)
+                #result_value = soup.select(fixed_selector_code_value)
+                result_value = hlxml.cssselect(fixed_selector_code_value)
 
                 found_attr_value = result_value[0].text.strip().encode('utf-8') if result_value else 'not found'
 
