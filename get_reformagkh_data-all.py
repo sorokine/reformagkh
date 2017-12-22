@@ -557,10 +557,10 @@ def parse_house_page_attrlist(soup):
 
         if row[selector_name]:
             attr_name = '->'.join([ cur_sect[attr] for attr in sect_attrs if cur_sect[attr] ])
-            fixed_selector_code_name = re.sub('nth-child', 'nth-of-type', row[selector_name]) # this is needed because bs does not support nth-child
-            fixed_selector_code_value = re.sub('nth-child', 'nth-of-type', row[selector_value])
-            #fixed_selector_code_name = row[selector_name]
-            #fixed_selector_code_value = row[selector_value]
+            #fixed_selector_code_name = re.sub('nth-child', 'nth-of-type', row[selector_name]) # this is needed because bs does not support nth-child
+            #fixed_selector_code_value = re.sub('nth-child', 'nth-of-type', row[selector_value])
+            fixed_selector_code_name = row[selector_name]
+            fixed_selector_code_value = row[selector_value]
             #print attr_name, '==>', row[selector_name], '==>', fixed_selector_code_name
             assert fixed_selector_code_name, 'Selector for name is empty for row ' + row
             assert fixed_selector_code_value, 'Selector for value is empty for row ' + row
