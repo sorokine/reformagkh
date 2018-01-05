@@ -567,8 +567,8 @@ def parse_house_page_attrlist(soup):
             assert fixed_selector_code_name, 'Selector for name is empty for row ' + row
             assert fixed_selector_code_value, 'Selector for value is empty for row ' + row
 
-            xpath_name = fixed_selector_code_name if fixed_selector_code_name.startswith('//') else CSSSelector(fixed_selector_code_name).path
-            xpath_value = fixed_selector_code_value if fixed_selector_code_value.startswith('//') else CSSSelector(fixed_selector_code_value).path
+            xpath_name = fixed_selector_code_name if fixed_selector_code_name.startswith('/') else CSSSelector(fixed_selector_code_name).path
+            xpath_value = fixed_selector_code_value if fixed_selector_code_value.startswith('/') else CSSSelector(fixed_selector_code_value).path
 
             #result_name = soup.select(fixed_selector_code_name)
             #result_name = hlxml.cssselect(fixed_selector_code_name)
