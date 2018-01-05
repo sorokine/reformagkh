@@ -514,6 +514,7 @@ def write_house_attribute(result_set):
 
 import lxml.html
 from lxml.cssselect import CSSSelector
+from lxml import etree
 
 def parse_house_page_attrlist(soup):
     """Parses a house page using attrlist information"""
@@ -544,6 +545,7 @@ def parse_house_page_attrlist(soup):
 
 #    print(soup.contents[1])
     hlxml = lxml.html.fromstring(soup.contents[1].encode('utf-8'))
+    tree = etree.ElementTree(hlxml)
 
     for row in attrlist:
 
@@ -565,8 +567,12 @@ def parse_house_page_attrlist(soup):
             assert fixed_selector_code_name, 'Selector for name is empty for row ' + row
             assert fixed_selector_code_value, 'Selector for value is empty for row ' + row
 
+            xpath_name = fixed_selector_code_name if fixed_selector_code_name.startswith('//') else CSSSelector(fixed_selector_code_name).path
+            xpath_value = fixed_selector_code_value if fixed_selector_code_value.startswith('//') else CSSSelector(fixed_selector_code_value).path
+
             #result_name = soup.select(fixed_selector_code_name)
-            result_name = hlxml.cssselect(fixed_selector_code_name)
+            #result_name = hlxml.cssselect(fixed_selector_code_name)
+            result_name = tree.xpath(xpath_name)
 
             if result_name:
                 found_attr_name = result_name[0].text_content().strip().encode('utf-8')
@@ -574,7 +580,8 @@ def parse_house_page_attrlist(soup):
                 # value extraction
                 #print '>>>>'+fixed_selector_code_value
                 #result_value = soup.select(fixed_selector_code_value)
-                result_value = hlxml.cssselect(fixed_selector_code_value)
+                #result_value = hlxml.cssselect(fixed_selector_code_value)
+                result_value = tree.xpath(xpath_value)
 
                 found_attr_value = result_value[0].text_content().strip().encode('utf-8') if result_value else 'not found'
 
